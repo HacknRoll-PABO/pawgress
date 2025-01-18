@@ -30,8 +30,6 @@ def onboarding():
             "This is the background of the user whose tasks you will be categorising: \n"
         )
         f.write(writeup)
-        f.write("\n\n\n")
-        f.write("These are a few examples of tasks and their related categories: \n")
     return "Done onboarding"
 
 
@@ -70,9 +68,23 @@ def update_task():
     return "Hello"
 
 
-@app.route("/suggest/category")
+@app.route("/suggest/category", methods=["POST"])
 def suggest_category():
-    return "Hello"
+    with open("prompts/category_prompt.txt") as f:
+        prompt = f.read()
+
+    task = request.json
+    completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": prompt,
+            },
+            {"role": "user", "content": json.dumps(task)},
+        ],
+        model="gpt-4o",
+    )
+    return json.dumps({"suggestion": completion.choices[0].message.content})
 
 
 app.run(debug=True)
