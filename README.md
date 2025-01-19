@@ -1,4 +1,4 @@
-##About
+## About
 Pawgress was inspired by our love for animals and a desire to boost productivity. The idea of combining a virtual pet with task management struck us as a unique way to empower users to stay productuve. This tool aims to help users efficiently manage their tasks whilst enjoying the companionship of a delightful virtual pet.
 
 ## How Did We Build It?
