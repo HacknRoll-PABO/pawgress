@@ -1,3 +1,5 @@
+![screen-1](https://github.com/user-attachments/assets/195737b3-81a8-4be2-a706-c3d7bb6bd7e0)
+
 ## About
 Pawgress was inspired by our love for animals and a desire to boost productivity. The idea of combining a virtual pet with task management struck us as a unique way to empower users to stay productuve. This tool aims to help users efficiently manage their tasks whilst enjoying the companionship of a delightful virtual pet.
 
