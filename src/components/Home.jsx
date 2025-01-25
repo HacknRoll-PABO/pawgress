@@ -134,17 +134,17 @@ function FeatureCard({ icon: Icon, iconType = 'heroicon', title, children, delay
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
-      className="card hover:shadow-lg bg-white"
+      className="card hover:shadow-lg bg-white p-6 rounded-xl"
     >
       <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 bg-amber-100 rounded-lg">
+        <div className="p-2 bg-amber-100 rounded-lg shrink-0">
           {iconType === 'fontawesome' ? (
             <FontAwesomeIcon icon={Icon} className="h-6 w-6 text-amber-600" />
           ) : (
             <Icon className="h-6 w-6 text-amber-600" />
           )}
         </div>
-        <h2 className="text-xl font-semibold text-neutral-800">{title}</h2>
+        <h2 className="text-lg sm:text-xl font-semibold text-neutral-800">{title}</h2>
       </div>
       {children}
     </motion.div>
@@ -177,19 +177,19 @@ function Home() {
 
   return (
     <AuroraBackground>
-      <div className="relative w-full">
-        <div className="min-h-[300px] flex items-center justify-center py-4">
-          <div className="text-center w-full max-w-6xl mx-auto px-4">
+      <div className="relative w-full min-h-screen">
+        <div className="flex items-center justify-center py-8 px-4">
+          <div className="text-center w-full max-w-6xl mx-auto">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="flex items-center justify-center text-6xl font-bold text-neutral-800 mb-6 font-['Pecita']"
+              className="flex items-center justify-center text-4xl sm:text-6xl font-bold text-neutral-800 mb-6 font-['Pecita']"
             >
               <span>P</span>
               <FontAwesomeIcon 
                 icon={faPaw} 
-                className="mx-2 text-amber-500 transform -rotate-12 h-12"
+                className="mx-2 text-amber-500 transform -rotate-12 h-8 sm:h-12"
               />
               <span>WGRESS</span>
             </motion.h1>
@@ -198,19 +198,19 @@ function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="text-xl text-neutral-600 max-w-2xl mx-auto mb-12"
+              className="text-lg sm:text-xl text-neutral-600 max-w-2xl mx-auto mb-12 px-4"
             >
               <Highlight>Your personal task manager with a virtual pet companion.</Highlight>
               {' '}Complete tasks, earn rewards, and watch your pet grow!
             </motion.p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto px-4">
               <FeatureCard 
                 icon={CheckCircleIcon}
                 title="Task Management"
                 delay={0.5}
               >
-                <p className="text-neutral-600 mb-4">
+                <p className="text-sm sm:text-base text-neutral-600 mb-4">
                   Organize your tasks by subject and track your progress. Each completed task earns you XP and coins!
                 </p>
                 <DemoTask />
@@ -222,7 +222,7 @@ function Home() {
                 title="Virtual Pet"
                 delay={0.7}
               >
-                <p className="text-neutral-600 mb-4">
+                <p className="text-sm sm:text-base text-neutral-600 mb-4">
                   Take care of your virtual pet companion! Use earned coins to buy food, toys, and accessories.
                 </p>
                 <div className="flex flex-col items-center justify-center">
@@ -235,7 +235,7 @@ function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.9 }}
-              className="mt-16 max-w-md mx-auto"
+              className="mt-8 sm:mt-16 max-w-md mx-auto px-4"
             >
               {isNamed ? (
                 <div className="text-center">

@@ -10,35 +10,32 @@ import Dashboard from './components/Dashboard';
 const INITIAL_COINS = 100;
 const LEVEL_UP_REWARD = 100;
 
-export const GameContext = createContext(null);
+export const GameContext = createContext();
 
-function useCoins() {
-  const [coins, setCoins] = useState(() => {
-    try {
-      const saved = localStorage.getItem('coins');
-      return saved ? Number(saved) : INITIAL_COINS;
-    } catch {
-      return INITIAL_COINS;
-    }
-  });
+function loadFromStorage(key, defaultValue) {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? Number(saved) : defaultValue;
+  } catch {
+    return defaultValue;
+  }
+}
 
+const App = () => {
+  const [coins, setCoins] = useState(() => loadFromStorage('coins', INITIAL_COINS));
+
+  // Save coins to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('coins', coins.toString());
   }, [coins]);
 
-  return [coins, setCoins];
-}
-
-export default function App() {
-  const [coins, setCoins] = useCoins();
+  const handleLevelUp = () => {
+    setCoins(prevCoins => prevCoins + LEVEL_UP_REWARD);
+  };
 
   const handlePurchase = (item) => {
     if (!item?.price) return;
     setCoins((prev) => Math.max(0, prev - item.price));
-  };
-
-  const handleLevelUp = () => {
-    setCoins((prev) => prev + LEVEL_UP_REWARD);
   };
 
   const contextValue = {
@@ -63,4 +60,6 @@ export default function App() {
       </BrowserRouter>
     </GameContext.Provider>
   );
-}
+};
+
+export default App;

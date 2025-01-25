@@ -105,7 +105,7 @@ const LevelUpNotification = memo(function LevelUpNotification() {
 });
 
 function Tasks() {
-  const { coins, onLevelUp } = useContext(GameContext);
+  const { coins, setCoins, onLevelUp } = useContext(GameContext);
   const [subjects, setSubjects] = useState(() => loadFromStorage('subjects', []));
   const [isAdding, setIsAdding] = useState(false);
   const [xp, setXP] = useState(() => loadFromStorage('xpData', { xp: 0, level: 0 }).xp);
@@ -142,7 +142,11 @@ function Tasks() {
 
   const handleUpdateSubject = (updatedSubject, taskCompleted = false, taskDifficulty = 'MEDIUM') => {
     if (taskCompleted) {
-      setXP((currentXP) => currentXP + DIFFICULTY_LEVELS[taskDifficulty].xp);
+      const xpGained = DIFFICULTY_LEVELS[taskDifficulty].xp;
+      setXP((currentXP) => currentXP + xpGained);
+      // Award coins based on difficulty
+      const coinsGained = Math.floor(xpGained / 2); // Or any other formula you prefer
+      setCoins(prevCoins => prevCoins + coinsGained);
     }
 
     setSubjects((prev) =>

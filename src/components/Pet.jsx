@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { PlayIcon, PauseIcon, CurrencyDollarIcon } from '@heroicons/react/24/solid';
 import HealthBar from './HealthBar';
+import CircularHealthBar from './CircularHealthBar';
 import DraggableItem from './DraggableItem';
 import WoofBubble from './WoofBubble';
 import { getInventory, removeFromInventory } from '../services/inventoryService';
@@ -232,16 +233,17 @@ export default function Pet({ coins, setCoins }) {
   }, []);
 
   return (
-    <div className="flex gap-4 max-w-7xl mx-auto h-screen p-4">
+    <div className="flex flex-col lg:flex-row gap-4 max-w-7xl mx-auto p-4 h-[calc(100vh-2rem)] min-h-[600px]">
       {/* Main Content */}
-      <div className="flex-grow space-y-4">
+      <div className="flex-grow space-y-4 min-h-0 flex flex-col">
         {/* Pet Display Card */}
-        <div className="bg-white rounded-lg shadow-lg p-4">
-          <div className="flex justify-between items-center mb-3">
+        <div className="bg-white rounded-lg shadow-lg p-4 flex-grow flex flex-col min-h-0">
+          {/* Header - Hidden on mobile */}
+          <div className="hidden sm:flex flex-col sm:flex-row justify-between items-center gap-3 mb-3">
             <h2 className="text-xl font-bold text-neutral-800">
               {petName ? `Meet ${petName}!` : 'Your Virtual Pet'}
             </h2>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center justify-center gap-4">
               {/* Coins display */}
               <div className="flex items-center gap-1 bg-amber-50 px-3 py-1.5 rounded-md">
                 <CurrencyDollarIcon className="w-5 h-5 text-amber-500" />
@@ -285,18 +287,32 @@ export default function Pet({ coins, setCoins }) {
             </div>
           </div>
 
+          {/* Mobile Controls */}
+          <div className="sm:hidden flex justify-end mb-2">
+            <button
+              onClick={toggleAnimation}
+              className="btn btn-primary"
+            >
+              {isPlaying ? (
+                <PauseIcon className="w-4 h-4" />
+              ) : (
+                <PlayIcon className="w-4 h-4" />
+              )}
+            </button>
+          </div>
+
           {/* Pet Display Area */}
           <div 
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             className={`
-              w-full h-[400px] rounded-lg flex items-center justify-center overflow-hidden relative bg-neutral-50
+              flex-grow min-h-0 rounded-lg flex items-center justify-center overflow-hidden relative bg-neutral-50
               transition-all duration-300 ease-in-out
               ${isDragOver ? 'ring-4 ring-emerald-400 ring-opacity-50 scale-[1.02]' : ''}
             `}
             style={{
-              backgroundImage: `url(${currentBackground})`,
+              backgroundImage: `${window.innerWidth > 640 ? `url(${currentBackground})` : 'none'}`,
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}
@@ -317,12 +333,12 @@ export default function Pet({ coins, setCoins }) {
             </div>
 
             {/* Platform shadow */}
-            <div className="absolute bottom-6 w-32 h-8 bg-black/10 rounded-full blur-sm" />
+            <div className="absolute hidden sm:block bottom-6 w-32 h-8 bg-black/10 rounded-full blur-sm" />
             
             {/* Pet sprite */}
             <div className={`
               relative transform transition-all duration-200 ease-in-out
-              ${isJumping ? 'translate-y-20' : 'translate-y-28'}
+              ${isJumping ? '-translate-y-4 sm:translate-y-20' : 'translate-y-0 sm:translate-y-28'}
             `}>
               <WoofBubble />
               <img
@@ -336,7 +352,7 @@ export default function Pet({ coins, setCoins }) {
                         : sitFrames[currentFrame]
                 }
                 alt="Pet animation frame"
-                className="w-auto h-auto max-w-full max-h-full object-contain image-rendering-pixelated scale-[4] transition-transform duration-200"
+                className="w-auto h-auto max-w-full max-h-full object-contain image-rendering-pixelated scale-[3] sm:scale-[4] transition-transform duration-200"
                 style={{ imageRendering: 'pixelated' }}
               />
             </div>
@@ -345,11 +361,16 @@ export default function Pet({ coins, setCoins }) {
 
         {/* Pet Stats Card */}
         <div className="bg-white rounded-lg shadow-lg p-4">
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-2 gap-6">
             {/* Health Section */}
             <div>
               <h3 className="text-base font-semibold text-neutral-700 mb-2">Pet Health</h3>
-              <HealthBar health={health} maxHealth={MAX_HEALTH} />
+              <div className="sm:block hidden">
+                <HealthBar health={health} maxHealth={MAX_HEALTH} />
+              </div>
+              <div className="sm:hidden block">
+                <CircularHealthBar health={health} maxHealth={MAX_HEALTH} />
+              </div>
             </div>
 
             {/* Status Section */}
@@ -369,18 +390,47 @@ export default function Pet({ coins, setCoins }) {
       </div>
 
       {/* Side Panel - Items */}
-      <div className="w-72 flex-shrink-0 bg-white rounded-lg shadow-lg p-4">
+      <div className="lg:w-72 flex-shrink-0 bg-white rounded-lg shadow-lg p-4 overflow-hidden flex flex-col min-h-0">
         <h2 className="text-lg font-bold text-neutral-800 mb-2">Your Items</h2>
-        <p className="text-xs text-neutral-600 mb-4">
+        <p className="text-xs text-neutral-600 mb-4 hidden sm:block">
           Drag items onto your pet to use them
         </p>
-        <div className="space-y-2 overflow-y-auto max-h-[calc(100vh-160px)]">
-          {items.map(item => (
-            <DraggableItem
-              key={item.id}
-              item={item}
-            />
-          ))}
+        <div className="overflow-y-auto flex-grow">
+          <div className="space-y-2">
+            {items.map(item => (
+              <div key={item.id}>
+                {/* Desktop: Draggable Item */}
+                <div className="hidden sm:block">
+                  <DraggableItem item={item} />
+                </div>
+                {/* Mobile: Button Item */}
+                <div className="sm:hidden bg-white rounded-lg p-3 border border-neutral-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">
+                        {item.type === 'food' ? '🦴' : item.type === 'toy' ? '🎾' : '💊'}
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-neutral-800">{item.name}</h3>
+                        <p className="text-sm text-neutral-600">
+                          {item.type === 'food' ? '+20 HP' : item.type === 'toy' ? '+10 HP' : '+50 HP'}
+                        </p>
+                        <p className="text-xs text-neutral-500">Quantity: {item.quantity}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleUseItem(item)}
+                      disabled={item.quantity === 0}
+                      className={`px-3 py-1.5 rounded-md bg-emerald-50 text-emerald-600 font-medium text-sm
+                        ${item.quantity === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-emerald-100 active:bg-emerald-200'}`}
+                    >
+                      Use
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

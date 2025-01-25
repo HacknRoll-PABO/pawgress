@@ -155,7 +155,8 @@ export default function Dashboard() {
           />
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm">
+        {/* Heatmap - Hidden on mobile */}
+        <div className="hidden sm:block bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-neutral-700 mb-4">
             Task Completion Heatmap
           </h2>

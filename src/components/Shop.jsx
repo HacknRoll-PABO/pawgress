@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { CurrencyDollarIcon } from '@heroicons/react/24/solid';
 import ShopItem from './ShopItem';
 import { addToInventory } from '../services/inventoryService';
+import { GameContext } from '../App';
 
 // Shop inventory data
 const shopItems = [
@@ -55,7 +56,8 @@ const shopItems = [
   }
 ];
 
-export default function Shop({ coins, onPurchase }) {
+export default function Shop() {
+  const { coins, setCoins } = useContext(GameContext);
   const [notification, setNotification] = useState(null);
 
   const handleBuy = (item) => {
@@ -63,7 +65,7 @@ export default function Shop({ coins, onPurchase }) {
       // Add item to inventory
       addToInventory(item);
       // Update coins
-      onPurchase(item);
+      setCoins(prevCoins => prevCoins - item.price);
       showNotification(`Successfully purchased ${item.name}!`, 'success');
     } else {
       showNotification(`Not enough coins to buy ${item.name}`, 'error');
@@ -78,7 +80,7 @@ export default function Shop({ coins, onPurchase }) {
   return (
     <div className="max-w-7xl mx-auto p-4 space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <h2 className="text-2xl font-bold text-neutral-800">Pet Shop</h2>
         <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-sm">
           <CurrencyDollarIcon className="w-5 h-5 text-amber-500" />
@@ -89,7 +91,8 @@ export default function Shop({ coins, onPurchase }) {
       {/* Notification */}
       {notification && (
         <div className={`
-          p-4 rounded-lg
+          fixed top-4 left-1/2 transform -translate-x-1/2 z-50
+          max-w-sm w-full mx-4 p-4 rounded-lg shadow-lg
           ${notification.type === 'success' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}
         `}>
           {notification.message}
@@ -97,7 +100,7 @@ export default function Shop({ coins, onPurchase }) {
       )}
 
       {/* Shop Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {shopItems.map(item => (
           <ShopItem
             key={item.id}
